@@ -1,0 +1,80 @@
+import sys
+import serial
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+
+arduino = serial.Serial('COM3', 9600)
+
+class BuzzerApp(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Premium Buzzer Controller")
+        self.setGeometry(200, 200, 400, 300)
+
+        # Global font for the entire window
+        self.setFont(QFont("Montserrat", 12))
+
+        # Background style
+        self.setStyleSheet("""
+            QWidget {
+                background-color: black;
+                color: white;
+            }
+        """)
+
+        self.layout = QVBoxLayout()
+
+        # Label fonts
+        self.label = QLabel("Buzzer Controller")
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setFont(QFont("Montserrat", 16, QFont.Bold))
+
+        self.status_label = QLabel("Status: Waiting for action...")
+        self.status_label.setAlignment(Qt.AlignCenter)
+        self.status_label.setFont(QFont("Montserrat", 13))
+
+        # Button style
+        button_style = """
+        QPushButton {
+            background-color: #00ffff;
+            color: black;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        QPushButton:hover {
+            background-color: #00cccc;
+        }
+        """
+
+        # ON button
+        self.on_btn = QPushButton("TURN BUZZER ON")
+        self.on_btn.setStyleSheet(button_style)
+        self.on_btn.setFont(QFont("Montserrat", 12, QFont.Bold))
+        self.on_btn.clicked.connect(self.buzzer_on)
+
+        # OFF button
+        self.off_btn = QPushButton("TURN BUZZER OFF")
+        self.off_btn.setStyleSheet(button_style)
+        self.off_btn.setFont(QFont("Montserrat", 12, QFont.Bold))
+        self.off_btn.clicked.connect(self.buzzer_off)
+
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.status_label)
+        self.layout.addWidget(self.on_btn)
+        self.layout.addWidget(self.off_btn)
+        self.setLayout(self.layout)
+
+    def buzzer_on(self):
+        self.status_label.setText("Status: Buzzer is ON")
+        arduino.write(b'1')
+
+    def buzzer_off(self):
+        self.status_label.setText("Status: Buzzer is OFF")
+        arduino.write(b'0')
+
+app = QApplication(sys.argv)
+window = BuzzerApp()
+window.show()
+sys.exit(app.exec_())
