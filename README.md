@@ -56,7 +56,7 @@ COMPONENTS_USED = {
         "Arduino IDE"
     ]
 }
-HARDWARE_CONNECTIONS = {
+## HARDWARE_CONNECTIONS = {
     "Arduino_D8": "Buzzer Positive (+)",
     "Arduino_GND": "Buzzer Negative (-)"
 }
